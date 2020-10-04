@@ -6,9 +6,8 @@ module.exports = {
     description: 'Lists all the elements of the list',
     execute: async (message, args) => {
         let channel = message.channel
-            
-        let fields = []
 
+        let msg = ""
 
         try {
             let foundChannel = await Channel.findOne({
@@ -27,13 +26,7 @@ module.exports = {
                   .then(result => console.log(result))
                   .catch(err => console.error(err))
             }
-            let i = 0
-            for (let item of foundChannel.items) {
-                fields.push({ 
-                    name: `${i} - ${item.author}`,
-                    value: item.content
-                })
-                i++
+
             if (! foundChannel.items || foundChannel.items.length === 0) {
                 msg = "No items found, please use the 'add {element}' command to put your first item."
             } else {
@@ -48,7 +41,8 @@ module.exports = {
             msg = "Unable to generate the list, please try again."
         }
 
-        let embededMessage = Util.generateListEmbed(channel.name + " list", "0xffff00", fields, `Requested by ${message.author.username}`)
+        console.log(msg)
+        let embededMessage = Util.embedMessage(channel.name + " list", "0xffff00", msg)
         channel.send(embededMessage);
     },
 };
